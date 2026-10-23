@@ -1,0 +1,61 @@
+{# RTK sidebar panel: token savings + integration status.
+   Data comes from GET /api/ext/rtk/stats (the module's _route_stats).
+   Component logic lives in webui/assets/js/rtk_panel.js (auto-loaded). #}
+<div class="rtk-panel" x-data="rtkPanel()" x-init="load()">
+    <div class="rtk-head">
+        <span class="rtk-title">RTK</span>
+        <button class="rtk-refresh" @click="load()" :disabled="loading" title="Refresh">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" :class="{ 'rtk-spin': loading }"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+        </button>
+    </div>
+
+    <template x-if="error">
+        <div class="rtk-error" x-text="'Could not load stats: ' + error"></div>
+    </template>
+
+    <template x-if="loading && !data">
+        <div class="rtk-loading">loading…</div>
+    </template>
+
+    <template x-if="data">
+        <div class="rtk-body">
+            <div class="rtk-status">
+                <span class="rtk-chip" :title="data.binary" x-text="data.version || 'rtk'"></span>
+                <template x-for="w in data.wrapped" :key="w">
+                    <span class="rtk-chip rtk-chip-ok" :title="'commands via ' + w + ' are rewritten through rtk'" x-text="w"></span>
+                </template>
+                <template x-if="!data.wrapped.length">
+                    <span class="rtk-chip rtk-chip-warn" title="no shell module is currently wrapped">no shells wrapped</span>
+                </template>
+                <span class="rtk-chip" :class="data.sandbox === 'ready' ? 'rtk-chip-ok' : 'rtk-chip-warn'" :title="'sandboxed shell rtk probe: ' + data.sandbox" x-text="'sandbox: ' + data.sandbox"></span>
+            </div>
+
+            <div class="rtk-grid">
+                <div class="rtk-stat"><b x-text="data.gain.commands ?? '—'"></b><small>commands</small></div>
+                <div class="rtk-stat"><b x-text="data.gain.saved_tokens ?? '—'"></b><small>tokens saved</small></div>
+                <div class="rtk-stat"><b x-text="data.gain.saved_percent ? data.gain.saved_percent + '%' : '—'"></b><small>reduction</small></div>
+                <div class="rtk-stat"><b x-text="data.gain.exec_time ?? '—'"></b><small>exec time</small></div>
+            </div>
+
+            <div class="rtk-meter-block" :title="'efficiency: ' + (data.gain.efficiency ?? 'unknown')">
+                <div class="rtk-meter-label">
+                    <span>efficiency</span>
+                    <span x-text="data.gain.efficiency != null ? data.gain.efficiency + '%' : '—'"></span>
+                </div>
+                <div class="rtk-meter">
+                    <div class="rtk-meter-fill" :style="'width:' + meterWidth() + '%'"></div>
+                </div>
+            </div>
+
+            <details class="rtk-raw">
+                <summary>raw gain output</summary>
+                <pre x-text="data.gain_raw || '(no data yet)'"></pre>
+            </details>
+
+            <div class="rtk-foot">
+                <span :title="data.configured_path" x-text="data.configured_path"></span>
+                <template x-if="lastLoad"><span x-text="'updated ' + lastLoad"></span></template>
+            </div>
+        </div>
+    </template>
+</div>

@@ -1,0 +1,215 @@
+/* RTK sidebar panel styles (auto-loaded from <module>/webui/assets/css/).
+   Uses the real theme tokens from channels/webui/themes/base.json.
+   The .sidebar-panel wrapper is a flex column with overflow:hidden, so the
+   panel body itself must scroll, exactly like #chat-list does. */
+
+.rtk-panel {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 14px 16px;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+
+    /* vertical scrolling: the panel is the scroller inside .sidebar-panel */
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar) transparent;
+}
+
+.rtk-panel::-webkit-scrollbar { width: 8px; }
+.rtk-panel::-webkit-scrollbar-track { background: transparent; }
+.rtk-panel::-webkit-scrollbar-thumb {
+    background: var(--scrollbar);
+    border-radius: var(--radius-full);
+}
+.rtk-panel::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
+
+/* header stays reachable while the body scrolls */
+.rtk-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 0 6px;
+    background: var(--bg-primary);
+}
+
+.rtk-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.rtk-refresh {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    display: inline-flex;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.rtk-refresh:hover { color: var(--text-primary); border-color: var(--text-muted); }
+.rtk-refresh:disabled { opacity: 0.5; cursor: default; }
+.rtk-refresh svg { width: 13px; height: 13px; }
+.rtk-spin { animation: rtk-rotate 1s linear infinite; }
+@keyframes rtk-rotate { to { transform: rotate(360deg); } }
+
+.rtk-loading { color: var(--text-muted); font-size: 12px; }
+.rtk-error { color: var(--error); font-size: 12px; line-height: 1.5; }
+
+/* status chips */
+.rtk-status {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.rtk-chip {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    padding: 2px 9px;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rtk-chip-ok { border-color: color-mix(in srgb, var(--info) 45%, transparent); color: var(--info); }
+.rtk-chip-warn { border-color: color-mix(in srgb, var(--important) 45%, transparent); color: var(--important); }
+
+/* savings grid */
+.rtk-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.rtk-stat {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 9px 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.rtk-stat b {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rtk-stat small {
+    font-size: 10px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+/* efficiency meter */
+.rtk-meter-block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.rtk-meter-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.rtk-meter {
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.rtk-meter-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--info), var(--accent));
+    border-radius: var(--radius-full);
+    transition: width 0.4s ease;
+}
+
+/* raw gain output */
+.rtk-raw summary {
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 12px;
+    outline: none;
+    user-select: none;
+}
+
+.rtk-raw summary:hover { color: var(--text-primary); }
+
+.rtk-raw pre {
+    margin-top: 7px;
+    background: var(--bg-code);
+    border: 1px solid var(--tool-border);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    font-family: var(--code-font);
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-code);
+
+    /* the raw report can be long: scroll inside itself, never blow up the panel */
+    max-height: 40vh;
+    overflow: auto;
+    white-space: pre;
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar) transparent;
+}
+
+.rtk-raw pre::-webkit-scrollbar { width: 8px; height: 8px; }
+.rtk-raw pre::-webkit-scrollbar-thumb {
+    background: var(--scrollbar);
+    border-radius: var(--radius-full);
+}
+
+/* footer */
+.rtk-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    margin-top: auto; /* pins to the bottom when content is short */
+    padding-top: 4px;
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+.rtk-foot span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
