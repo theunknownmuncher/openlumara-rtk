@@ -56,6 +56,10 @@ injection) and logs why.
 ## Notes
 
 - This module is marked **unsafe** because `rtk_exec` runs commands on the host.
+  Because of that designation the UI hides it by default: to make the rtk
+  module appear in the UI, set `show_unsafe_settings: true` in OpenLumara's
+  `config.yml` (it belongs to the `webui` channel settings and defaults to
+  `false` — it is deliberately not toggleable from the UI itself).
 - `execution_timeout: 0` removes the module's own timeout, but OpenLumara's core
   `tool_timeout` setting (core.tool_timeout) still caps every tool call at the
   framework level — raise it in `config.yml` too for truly unbounded commands.
